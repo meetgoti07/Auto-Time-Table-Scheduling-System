@@ -118,7 +118,7 @@ import Todo from './pages/Todo';
 
 //Scroll To Top
 import ScrollToTop from './layouts/ScrollToTop';
-import DashboardDark from './components/Dashboard/DashboardDark';
+import DashboardDark from './components/Dashboard/Admin';
 
 
 const Markup = () => {
@@ -132,7 +132,7 @@ const Markup = () => {
     /// Dashboard
     { url: '', component: <Home/> },
     { url: 'dashboard', component: <Home/> },
-    { url: 'index-2', component: <DashboardDark/> },
+    { url: 'timetable', component: <DashboardDark/> },
     { url: "workout-statistic", component: <WorkoutStatistic/> },
     { url: "workoutplan", component: <WorkoutPlan/> },
     { url: "distance-map", component: <DistanceMap/> },

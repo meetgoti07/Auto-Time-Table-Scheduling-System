@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from datetime import datetime
 from .models import Classes, Subjects, Teachers, Divisions, Schedule, Users
 
 class ClassesBatchSerializer(serializers.ModelSerializer):
@@ -45,3 +46,17 @@ class UsersSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
+
+class TimetableSerializer(serializers.Serializer):
+    division = serializers.CharField()
+    day = serializers.CharField()
+    start_time = serializers.DateTimeField(format='%H:%M')
+    end_time = serializers.DateTimeField(format='%H:%M')
+    classname = serializers.CharField()
+    subjectname = serializers.CharField()
+    teachername = serializers.CharField()
+
+class DisplayTTSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Schedule
+        fields = ['start_times', 'end_times', 'days']

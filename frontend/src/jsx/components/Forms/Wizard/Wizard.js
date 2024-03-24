@@ -15,6 +15,7 @@ const Wizard = () => {
 	const [goSteps, setGoSteps] = useState(0);
 
 	const handleStepOneSubmit = async (data) => {
+		console.log(data);
 		try {
 		  const response = await axios.post('http://127.0.0.1:8000/api/classes/', data);
 		  console.log(response);
@@ -30,6 +31,7 @@ const Wizard = () => {
 	  };
 
 	const handleStepTwoSubmit = async (data) => {
+		console.log(data);
 		
 		try {
 		  const response = await axios.post('http://127.0.0.1:8000/api/subjects/', data);
@@ -47,6 +49,7 @@ const Wizard = () => {
 		}
 	  };
 	  const handleStepThreeSubmit = async (data) => {
+		console.log(data);
 		
 		try {
 		  const response = await axios.post('http://127.0.0.1:8000/api/teachers/', data);
@@ -63,6 +66,7 @@ const Wizard = () => {
 	  };
 
 	  const handleStepFourSubmit = async (data) => {
+		console.log(data);
 		try {
 		  const response = await axios.post('http://127.0.0.1:8000/api/divisions/', data);
 		  console.log(response);
@@ -78,6 +82,7 @@ const Wizard = () => {
 	  };
 
 	  const handleStepFiveSubmit = async (data) => {
+		console.log(data);
 
 		try {
 		  const response = await axios.post('http://127.0.0.1:8000/api/schedule/', data);

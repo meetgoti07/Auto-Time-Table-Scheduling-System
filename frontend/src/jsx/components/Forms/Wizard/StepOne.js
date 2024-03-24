@@ -37,11 +37,7 @@ const StepOne = ({ onNextClick }) => {
     // Call the onNextClick callback with the modified data
     onNextClick(dataToSend);
   };
-  
-  
-  const handleAddUsername = () => {
-    setRows([...rows, { user: userDetails.username }]);
-  };
+
 
   return (
     <section>

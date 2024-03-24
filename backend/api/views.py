@@ -2,10 +2,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Schedule, Divisions, Users, Classes, Subjects, Teachers, Schedule, Divisions
-from .serializers import ClassesBatchSerializer, SubjectsSerializer, TeachersSerializer, DivisionsSerializer, ScheduleSerializer, UsersSerializer
+from .serializers import ClassesBatchSerializer, SubjectsSerializer, TeachersSerializer,TimetableSerializer,DisplayTTSerializer, DivisionsSerializer, ScheduleSerializer, UsersSerializer
 from datetime import datetime, timedelta
 import jwt
 from django.conf import settings
+from .GA_helpers import format_for_ga, create_random_timetable
 
 
 class ClassesAPIView(APIView):
@@ -155,3 +156,59 @@ class UserLoginAPIView(APIView):
             }
             return Response(data=data, status=status.HTTP_200_OK)
         return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+class TimeTableAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            # Extract the username from the request data
+            username = request.data.get('username')
+
+            # Fetch data associated with the user from PostgreSQL instead of the default SQLite
+            classes = Classes.objects.filter(user=username)
+            subjects = Subjects.objects.filter(user=username)
+            teachers = Teachers.objects.filter(user=username)
+            divisions = Divisions.objects.filter(user=username)
+            schedule_params = Schedule.objects.filter(user=username).first()
+
+            if not all([classes.exists(), subjects.exists(), teachers.exists(), divisions.exists(), schedule_params]):
+                return Response({'error': 'Incomplete data for generating timetable'},
+                                status=status.HTTP_400_BAD_REQUEST)
+            
+
+            # Prepare data for the genetic algorithm - this code would be the same as if using SQLite
+            ga_input_data = format_for_ga(classes, subjects, teachers, divisions, schedule_params)
+            print("work")
+            generated_timetable = create_random_timetable(ga_input_data)
+            data_list = [{'division': key[0], 'day': key[1], 'start_time': key[2], 'end_time': key[3], **value} for key, value in generated_timetable.items()]
+            serializer = TimetableSerializer(data=data_list, many=True)
+
+            if serializer.is_valid():
+                print(serializer.data)
+                return Response(serializer.data,status=status.HTTP_200_OK)
+
+        except Exception as e:
+            print(f"Error: {str(e)}")
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class DisplayTTAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            # Extract the username from the request data
+            print(request.data)
+            username = request.data.get('username')
+            print(username)
+
+            # Fetch data associated with the user from the database
+            timetable_data = Schedule.objects.filter(user=username)
+
+            if timetable_data.exists():
+                serializer = DisplayTTSerializer(timetable_data, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'No timetable data found for the given username'}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

@@ -151,7 +151,7 @@ const SideBar = () => {
                 <span className={`heart`}
                   onClick={(e)=>e.target.classList.toggle('heart-blast')}
                 ></span>{" "}
-                by DexignZone
+                by Meet Goti
               </p>
             </div>
         </div>

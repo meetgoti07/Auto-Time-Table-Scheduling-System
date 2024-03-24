@@ -10,8 +10,8 @@ export const MenuList = [
                 to: 'dashboard',					
             },           
             {
-                title: 'Admin',
-                to: 'index-2',			
+                title: 'Timetable',
+                to: 'timetable',			
             }              
         ],
     },
