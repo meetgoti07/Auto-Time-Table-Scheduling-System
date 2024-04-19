@@ -29,15 +29,10 @@ class DivisionsSerializer(serializers.ModelSerializer):
         fields = ['divisionname', 'subdivisions', 'subjects', 'user']
 
 class ScheduleSerializer(serializers.ModelSerializer):
-    user = serializers.CharField(max_length=50)
-    daysOfWeek = serializers.JSONField()  # Assuming JSONField for storing arrays in PostgreSQL
-    sessionTimes = serializers.JSONField()  # Assuming JSONField for storing arrays in PostgreSQL
-    breakData = serializers.JSONField()  # Assuming JSONField for storing arrays in PostgreSQL
-
     class Meta:
         model = Schedule
-        fields = ['daysOfWeek', 'sessionTimes', 'breakData', 'user']
-
+        fields = ['days', 'start_times', 'end_times', 'break_start_time', 'break_end_time', 'user']
+        
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users

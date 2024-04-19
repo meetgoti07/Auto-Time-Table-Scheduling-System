@@ -1,5 +1,4 @@
 import React from "react";
-import logo from "../../images/logo-full.png";
 import { Link } from "react-router-dom";
 const ForgotPassword = ({ history }) => {
   const onSubmit = (e) => {
@@ -18,8 +17,6 @@ const ForgotPassword = ({ history }) => {
                   <div className="auth-form">
                     <div className="text-center mb-3">
                       <Link to="/dashboard">
-                        <img src={logo} alt="" />
-                        <img src={logo} alt="" />
                       </Link>
                     </div>
                     <h4 className="text-center mb-4 text-white">

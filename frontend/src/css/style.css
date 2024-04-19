@@ -22834,7 +22834,7 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
 .photo-content {
   position: relative; }
   .photo-content .cover-photo {
-    background: url(../images/profile/cover.jpg);
+
     background-size: cover;
     background-position: center;
     min-height: 250px;
@@ -29195,7 +29195,6 @@ table.dataTable thead > tr > th.sorting:before, table.dataTable thead > tr > th.
         padding: 30px 0px; } }
 
 .welcome-content {
-  background: url("./../images/1.jpg");
   background-size: cover;
   background-position: center;
   height: 100%;
@@ -30728,7 +30727,6 @@ span#counter {
   width: 60px;
   height: 60px;
   display: inline-block;
-  background: url("../images/like.png");
   cursor: pointer;
   margin: -25px -15px; }
 

@@ -2,11 +2,7 @@ import React  from "react";
 import { useDispatch , useSelector } from 'react-redux';
 
 /// React router dom
-import { Link } from "react-router-dom";
 
-/// images
-import logo from "../../../images/logo.png";
-import logoText from "../../../images/logo-text.png";
 
 import { navtoggle } from "../../../store/actions/AuthActions";
 
@@ -19,11 +15,11 @@ const NavHader = () => {
     };
    return (
       <div className="nav-header">
-         <Link to="/" className="brand-logo">
+         {/* <Link to="/" className="brand-logo">
             <img className="logo-abbr" src={logo} alt="" />
             <img className="logo-compact" src={logoText} alt="" />
             <img className="brand-title" src={logoText} alt="" />
-         </Link>
+         </Link> */}
 
          <div className="nav-control" onClick={() => handleToogle()}>
             <div className={`hamburger ${sideMenu ? "is-active" : ""}`}>

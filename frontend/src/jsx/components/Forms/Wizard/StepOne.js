@@ -1,5 +1,6 @@
 // StepOne.js
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const StepOne = ({ onNextClick }) => {
   const [rows, setRows] = useState([{ ClassName: "", Type: "Lab" }]);
@@ -14,6 +15,24 @@ const StepOne = ({ onNextClick }) => {
     const storedUserDetails = JSON.parse(localStorage.getItem('userDetails'));
     setUserDetails(storedUserDetails);
   }, []);
+
+  useEffect(() => {
+    if (userDetails && userDetails.username) {
+      fetchExistingData();
+    }
+  }, [userDetails]);
+
+
+  const fetchExistingData = async () => {
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/api/display-classes/', { username: userDetails.username });
+      const data = response.data;
+      console.log(data);
+      setRows(data); 
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  };
 
   const handleRemoveRow = (index) => {
     const updatedRows = [...rows];

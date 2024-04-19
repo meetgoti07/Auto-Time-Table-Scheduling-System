@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { connect, useDispatch } from 'react-redux';
-import logo from '../../images/logo-full.png'
+
 import {
     loadingToggleAction,
     signupAction,
@@ -48,7 +48,7 @@ function Register(props) {
                                 <div className='col-xl-12'>
                                     <div className='auth-form'>
                                         <div className='text-center mb-3'>
-                                            <img src={logo} alt="" />
+
                                         </div>
 
                                         <h4 className='text-center mb-4 text-white'>Sign up your account</h4>

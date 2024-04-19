@@ -5,10 +5,6 @@ import { loadingToggleAction,loginAction,
 } from '../../store/actions/AuthActions';
 
 // image
-//import logo from "../../images/logo-full.png";
-import logo from "../../images/logo.png";
-import logoText from "../../images/logo-text.png";
-import loginbg from "../../images/pic1.png";
 
 function Login (props) {
   const [email, setEmail] = useState('demo@example.con');
@@ -43,13 +39,11 @@ function Login (props) {
 			<div className="login-aside text-center  d-flex flex-column flex-row-auto">
 				<div className="d-flex flex-column-auto flex-column pt-lg-40 pt-15">
 					<div className="text-center mb-4 pt-5 brand-logo">
-						<img className="logo-abbr me-1" src={logo} alt="" width="80"/>
-						<img className="brand-title ms-2" src={logoText} alt="" width="108"/>
 					</div>
 					<h3 className="mb-2">Welcome back!</h3>
 					<p>Auto Time Table Generator</p>
 				</div>
-				<div className="aside-image" style={{backgroundImage:"url(" + loginbg + ")"}}></div>
+				<div className="aside-image"></div>
 			</div>
 			<div className="container flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
 				<div className="d-flex justify-content-center h-100 align-items-center">

@@ -35,21 +35,21 @@ class SubjectsAPIView(APIView):
             # Extract user information from the first dictionary
             user_data = request.data[0]
             user = user_data.get('user')
-            print(user)
+
 
             # Delete existing data for the user in the Subjects table
             Subjects.objects.filter(user=user).delete()
 
             # Serialize and save the new data (excluding the first dictionary)
             serializer = SubjectsSerializer(data=request.data[1:], many=True)
-            print(serializer)
+
             if serializer.is_valid():
                 serializer.save(user=user)  # Pass the user information to the serializer
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-            print(serializer.errors)
+
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print(e)
+  
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class TeachersAPIView(APIView):
@@ -79,13 +79,13 @@ class DivisionsAPIView(APIView):
             user = data[0]['user']
             Divisions.objects.filter(user=user).delete()
 
-            for item in data:
-                if 'classData' in item:
-                    divisionname = item['classData']['ClassName']
-                    subdivisions = [row['Subclass'] for row in item['subclassRows']]
-                    subjects = [row['Subject'] for row in item['subjectRows']]
-                    division = Divisions(divisionname=divisionname, subdivisions=subdivisions, subjects=subjects, user=user)
-                    division.save()
+            divisionData = data[1]['divisionData']
+            for item in divisionData:
+                divisionname = item['divisionName']
+                subdivisions = [sub['subDivisionName'] for sub in item['subDivisions']]
+                subjects = [sub['subjectName'] for sub in item['subjects']]
+                division = Divisions(divisionname=divisionname, subdivisions=subdivisions, subjects=subjects, user=user)
+                division.save()
             return Response(status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -179,13 +179,13 @@ class TimeTableAPIView(APIView):
 
             # Prepare data for the genetic algorithm - this code would be the same as if using SQLite
             ga_input_data = format_for_ga(classes, subjects, teachers, divisions, schedule_params)
-            print("work")
+  
             generated_timetable = create_random_timetable(ga_input_data)
             data_list = [{'division': key[0], 'day': key[1], 'start_time': key[2], 'end_time': key[3], **value} for key, value in generated_timetable.items()]
             serializer = TimetableSerializer(data=data_list, many=True)
 
             if serializer.is_valid():
-                print(serializer.data)
+                print("data: ", serializer.data)
                 return Response(serializer.data,status=status.HTTP_200_OK)
 
         except Exception as e:
@@ -196,12 +196,13 @@ class DisplayTTAPIView(APIView):
     def post(self, request, *args, **kwargs):
         try:
             # Extract the username from the request data
-            print(request.data)
+
             username = request.data.get('username')
-            print(username)
+ 
 
             # Fetch data associated with the user from the database
             timetable_data = Schedule.objects.filter(user=username)
+   
 
             if timetable_data.exists():
                 serializer = DisplayTTSerializer(timetable_data, many=True)
@@ -212,3 +213,96 @@ class DisplayTTAPIView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class DisplayClassesAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            # Extract the username from the request data
+            username = request.data.get('username')
+
+            # Fetch data associated with the user from the database
+            classes_data = Classes.objects.filter(user=username)
+
+
+            if classes_data.exists():
+                serializer = ClassesBatchSerializer(classes_data, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'No classes data found for the given username'}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class DisplaySubjectsAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            # Extract the username from the request data
+            username = request.data.get('username')
+
+            # Fetch data associated with the user from the database
+            subjects_data = Subjects.objects.filter(user=username)
+
+            if subjects_data.exists():
+                serializer = SubjectsSerializer(subjects_data, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'No subjects data found for the given username'}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class DisplayTeachersAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            # Extract the username from the request data
+            username = request.data.get('username')
+            
+            # Fetch data associated with the user from the database
+            teachers_data = Teachers.objects.filter(user=username)
+
+            if teachers_data.exists():
+                serializer = TeachersSerializer(teachers_data, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'No teachers data found for the given username'}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+class DisplayDivisionsAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            # Extract the username from the request data
+            username = request.data.get('username')
+
+            # Fetch data associated with the user from the database
+            divisions_data = Divisions.objects.filter(user=username)
+
+            if divisions_data.exists():
+                serializer = DivisionsSerializer(divisions_data, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'No divisions data found for the given username'}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class DisplayScheduleAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            # Extract the username from the request data
+            username = request.data.get('username')
+
+            # Fetch schedule associated with the user from the database
+            schedule_data = Schedule.objects.filter(user=username)
+
+            if schedule_data.exists():
+                serializer = ScheduleSerializer(schedule_data, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'No schedule data found for the given username'}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        

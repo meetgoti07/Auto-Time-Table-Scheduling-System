@@ -1,4 +1,5 @@
 import React, { useState,useEffect } from "react";
+import axios from "axios";
 
 const StepTwo = ({ onNextClick }) => {
   const [rows, setRows] = useState([{ subjectname: "", credit: "", length: "", type: "" }]);
@@ -18,6 +19,24 @@ const StepTwo = ({ onNextClick }) => {
     const storedUserDetails = JSON.parse(localStorage.getItem('userDetails'));
     setUserDetails(storedUserDetails);
   }, []);
+
+  useEffect(() => {
+    if (userDetails && userDetails.username) {
+      fetchExistingData();
+    }
+  }, [userDetails]);
+
+
+  const fetchExistingData = async () => {
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/api/display-subjects/', { username: userDetails.username });
+      const data = response.data;
+      console.log(data);
+      setRows(data); 
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    }
+  };
 
   const handleInputChange = (index, event) => {
     const { name, value } = event.target;

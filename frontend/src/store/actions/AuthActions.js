@@ -62,7 +62,9 @@ export function loginAction(email, password, navigate) {
                     response.data.expiresIn * 1000,
                     navigate,
                 );
+                if(response.data){
                dispatch(loginConfirmedAction(response.data));
+                }
 			   //console.log('kk------1');
 			   //console.log(kk);
 			   //console.log(response.data);

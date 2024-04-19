@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from api.views import ClassesAPIView, SubjectsAPIView , TeachersAPIView, ScheduleAPIView,DisplayTTAPIView, DivisionsAPIView, UserRegistrationAPIView, UserLoginAPIView, TimeTableAPIView
+from api.views import ClassesAPIView, SubjectsAPIView ,DisplayClassesAPIView , DisplaySubjectsAPIView ,TeachersAPIView, ScheduleAPIView,DisplayTTAPIView, DivisionsAPIView, UserRegistrationAPIView, UserLoginAPIView, TimeTableAPIView, DisplayTeachersAPIView, DisplayDivisionsAPIView, DisplayScheduleAPIView
 router = routers.DefaultRouter()
 
 # Wire up our API using automatic URL routing.
@@ -19,4 +19,9 @@ urlpatterns = [
     path('api/user-login/', UserLoginAPIView.as_view(), name='userlogin-api'),
     path('api/generate-timetable/', TimeTableAPIView.as_view(), name='generate-timetable'),
     path('api/display-timetable/', DisplayTTAPIView.as_view(), name='display-timetable'),
+    path('api/display-classes/', DisplayClassesAPIView.as_view(), name='display-classes'),
+    path('api/display-subjects/', DisplaySubjectsAPIView.as_view(), name='display-subjects'),
+    path('api/display-teachers/', DisplayTeachersAPIView.as_view(), name='display-teachers'),
+    path('api/display-divisions/', DisplayDivisionsAPIView.as_view(), name='display-divisions'),
+    path('api/display-schedule/', DisplayScheduleAPIView.as_view(), name='display-schedule'),
 ]

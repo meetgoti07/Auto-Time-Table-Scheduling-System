@@ -7,7 +7,6 @@ import {MenuList} from './Menu';
 import {useScrollPosition} from "@n8tb1t/use-scroll-position";
 /// Link
 
-import calimg from './../../../images/calendar.png';
 
 const reducer = (previousState, updatedState) => ({
   ...previousState,
@@ -146,13 +145,13 @@ const SideBar = () => {
                 <strong>Auto Time Table System</strong> © {d.getFullYear()} All
                 Rights Reserved
               </p>
-              <p>
+              {/* <p>
                 Made with{" "}
                 <span className={`heart`}
                   onClick={(e)=>e.target.classList.toggle('heart-blast')}
                 ></span>{" "}
                 by Meet Goti
-              </p>
+              </p> */}
             </div>
         </div>
       </div>

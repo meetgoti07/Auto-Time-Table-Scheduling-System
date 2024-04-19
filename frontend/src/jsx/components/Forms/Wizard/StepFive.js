@@ -1,4 +1,5 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const StepFive = ({ onNextClick }) => {
   const [daysOfWeek, setDaysOfWeek] = useState([{ Day: "" }]);
@@ -6,7 +7,7 @@ const StepFive = ({ onNextClick }) => {
     { StartTime: "", EndTime: "" },
   ]);
   const [breakData, setBreakData] = useState({ BreakStartTime: "", BreakEndTime: "" });
-  
+
   const handleBreakInputChange = (event) => {
     setBreakData({ ...breakData, [event.target.name]: event.target.value });
   };
@@ -17,6 +18,40 @@ const StepFive = ({ onNextClick }) => {
     const storedUserDetails = JSON.parse(localStorage.getItem('userDetails'));
     setUserDetails(storedUserDetails);
   }, []);
+
+  useEffect(() => {
+    if (userDetails && userDetails.username) {
+
+      fetchScheduleData();
+    }
+  }, [userDetails]);
+
+  const fetchScheduleData = async () => {
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/api/display-schedule/', { username: userDetails.username });
+      if (response.data && response.data.length > 0) {
+        const scheduleData = response.data[0];
+  
+        // Update daysOfWeek state
+        const days = scheduleData.days.map(day => ({ Day: day }));
+        setDaysOfWeek(days);
+  
+        // Update sessionTimes state
+        const times = scheduleData.start_times.map((startTime, index) => ({
+          StartTime: startTime,
+          EndTime: scheduleData.end_times[index]
+        }));
+        setSessionTimes(times);
+  
+        // Update breakData state
+        setBreakData({ BreakStartTime: scheduleData.break_start_time, BreakEndTime: scheduleData.break_end_time });
+      }
+    } catch (error) {
+      console.error('Failed to fetch schedule data:', error);
+    }
+  };
+
+
   const handleAddDay = () => {
     setDaysOfWeek([...daysOfWeek, { Day: "" }]);
   };
@@ -155,42 +190,42 @@ const StepFive = ({ onNextClick }) => {
           </div>
         </div>
 
-<div className="col-6 mb-2">
-  <div className="row">
-    <div className="col-6">Break Start Time</div>
-    <div className="col-6">Break End Time</div>
-  </div>
-  <div className="row">
-    <div className="col-6">
-      <input
-        type="time"
-        name="BreakStartTime"
-        value={breakData.BreakStartTime}
-        onChange={handleBreakInputChange}
-        className="form-control"
-        required
-      />
-    </div>
-    <div className="col-6">
-      <input
-        type="time"
-        name="BreakEndTime"
-        value={breakData.BreakEndTime}
-        onChange={handleBreakInputChange}
-        className="form-control"
-        required
-      />
-    </div>
-  </div>
-</div>
+        <div className="col-6 mb-2">
+          <div className="row">
+            <div className="col-6">Break Start Time</div>
+            <div className="col-6">Break End Time</div>
+          </div>
+          <div className="row">
+            <div className="col-6">
+              <input
+                type="time"
+                name="BreakStartTime"
+                value={breakData.BreakStartTime}
+                onChange={handleBreakInputChange}
+                className="form-control"
+                required
+              />
+            </div>
+            <div className="col-6">
+              <input
+                type="time"
+                name="BreakEndTime"
+                value={breakData.BreakEndTime}
+                onChange={handleBreakInputChange}
+                className="form-control"
+                required
+              />
+            </div>
+          </div>
+        </div>
 
         <div className="row">
-        <div className="col-6 col-sm-4 mb-2">
-          <button className="btn btn-primary sw-btn-next ms-1" onClick={handleNext}>
-            Save
-          </button>
+          <div className="col-6 col-sm-4 mb-2">
+            <button className="btn btn-primary sw-btn-next ms-1" onClick={handleNext}>
+              Save
+            </button>
+          </div>
         </div>
-      </div>
       </div>
     </section>
   );

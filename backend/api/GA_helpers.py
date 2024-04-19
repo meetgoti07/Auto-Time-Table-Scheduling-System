@@ -162,7 +162,7 @@ def create_random_timetable(input_data):
 
         for day in days:
             time_slots = create_time_slots(schedule_params['start_times'],schedule_params['end_times'])
-            print(time_slots)
+
 
             for start_time, end_time in time_slots:
                 # Filter subjects for the division that still have weekly credits
@@ -177,7 +177,7 @@ def create_random_timetable(input_data):
                     continue
 
                 selected_subject = [subject for subject in subjects if subject['subjectname'] ==  random.choice(possible_subjects)]
-                print(selected_subject)
+
 
                 if not selected_subject:
                     # No subjects left with credits for this day
@@ -187,7 +187,7 @@ def create_random_timetable(input_data):
                 if selected_subject[0]['length'] > 1:
                     # Find time slots for subjects that require more than one session (continuous)
                     continuous_slots = find_continuous_slots(time_slots, selected_subject[0]['length'])
-                    print(continuous_slots)
+ 
 
                     
                     if not continuous_slots:
@@ -202,14 +202,14 @@ def create_random_timetable(input_data):
                 # Filter teachers for the selected subject
                 subject_teachers = [teacher for teacher in teachers
                                     if selected_subject[0]['subjectname'] in teacher['subjects']]
-                print(subject_teachers)
+
                 
 
                 if not subject_teachers:
                     continue  # No teachers available for the subject
 
                 selected_class = get_compatible_class(classes, selected_subject[0]['type'])
-                print(selected_class)
+              
 
 
                 if not selected_class:
@@ -217,7 +217,7 @@ def create_random_timetable(input_data):
 
 
                 selected_teacher = random.choice(subject_teachers)
-                print(selected_teacher)
+             
 
 
 
@@ -226,7 +226,7 @@ def create_random_timetable(input_data):
                     'subjectname': selected_subject[0]['subjectname'],
                     'teachername': selected_teacher['teachername']
                 }
-                print("Workifjjkl")
+              
 
 
 
@@ -237,9 +237,9 @@ def create_random_timetable(input_data):
                 if selected_subject[0]['length'] > 1:
                     for slot in continuous_slots:
                         time_slots.remove(slot)
-                print("Workifjjkl")
+             
 
-            
+          
     return random_timetable
 
 

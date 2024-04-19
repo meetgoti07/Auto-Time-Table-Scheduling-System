@@ -66,7 +66,7 @@ const Wizard = () => {
 	  };
 
 	  const handleStepFourSubmit = async (data) => {
-		console.log(data);
+		console.log("four",data);
 		try {
 		  const response = await axios.post('http://127.0.0.1:8000/api/divisions/', data);
 		  console.log(response);
@@ -157,8 +157,8 @@ const Wizard = () => {
 									<>
 										<StepFive onNextClick={handleStepFiveSubmit} />
 										<div className="text-end toolbar toolbar-bottom p-2">
-											<button className="btn btn-secondary sw-btn-prev me-1" onClick={() => setGoSteps(2)}>Prev</button>
-											<button className="btn btn-primary sw-btn-next ms-1" onClick={() => setGoSteps(4)}>Submit</button>
+											<button className="btn btn-secondary sw-btn-prev me-1" onClick={() => setGoSteps(3)}>Prev</button>
+											<button className="btn btn-primary sw-btn-next ms-1" onClick={() => setGoSteps(5)}>Submit</button>
 										</div>
 									</>
 								)}

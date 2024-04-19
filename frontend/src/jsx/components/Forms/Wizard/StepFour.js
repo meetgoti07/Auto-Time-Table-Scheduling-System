@@ -1,43 +1,63 @@
-import React, { useState,useEffect } from "react";
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 const StepFour = ({ onNextClick }) => {
-  const [classData, setClassData] = useState({ ClassName: "" });
-  const [subclassRows, setSubclassRows] = useState([{ Subclass: "" }]);
-  const [subjectRows, setSubjectRows] = useState([{ Subject: "" }]);
 
+  const [divisionData, setDivisionData] = useState([{ divisionName: "", subDivisions: [{ subDivisionName: "" }], subjects: [{ subjectName: "" }] }]);
 
-  const handleAddSubclassRow = () => {
-    setSubclassRows([...subclassRows, { Subclass: "" }]);
+  const handleAddDivision = () => {
+    setDivisionData([...divisionData, { divisionName: "", subDivisions: [{ subDivisionName: "" }], subjects: [{ subjectName: "" }] }]);
   };
 
-  const handleAddSubjectRow = () => {
-    setSubjectRows([...subjectRows, { Subject: "" }]);
+  const handleAddSubdivision = (divisionIndex) => {
+    const newDivisionData = [...divisionData];
+    newDivisionData[divisionIndex].subDivisions.push({ subDivisionName: "" });
+    setDivisionData(newDivisionData);
   };
 
-  const handleRemoveSubclassRow = (index) => {
-    const updatedSubclassRows = [...subclassRows];
-    updatedSubclassRows.splice(index, 1);
-    setSubclassRows(updatedSubclassRows);
+  const handleAddSubject = (divisionIndex) => {
+    const newDivisionData = [...divisionData];
+    newDivisionData[divisionIndex].subjects.push({ subjectName: "" });
+    setDivisionData(newDivisionData);
   };
 
-  const handleRemoveSubjectRow = (index) => {
-    const updatedSubjectRows = [...subjectRows];
-    updatedSubjectRows.splice(index, 1);
-    setSubjectRows(updatedSubjectRows);
+  const handleRemoveDivision = (divisionIndex) => {
+    const newDivisionData = [...divisionData];
+    newDivisionData.splice(divisionIndex, 1);
+    setDivisionData(newDivisionData);
   };
 
+  const handleRemoveSubdivision = (divisionIndex, subdivisionIndex) => {
+    const newDivisionData = [...divisionData];
+    newDivisionData[divisionIndex].subDivisions.splice(subdivisionIndex, 1);
+    setDivisionData(newDivisionData);
+  };
 
-  const handleInputChange = (index, event, type) => {
-    if (type === "subclass") {
-      const updatedSubclassRows = [...subclassRows];
-      updatedSubclassRows[index][event.target.name] = event.target.value;
-      setSubclassRows(updatedSubclassRows);
+  const handleRemoveSubject = (divisionIndex, subjectIndex) => {
+    const newDivisionData = [...divisionData];
+    newDivisionData[divisionIndex].subjects.splice(subjectIndex, 1);
+    setDivisionData(newDivisionData);
+  };
+
+  const handleInputChange = (divisionIndex, event, type, subIndex) => {
+    const newDivisionData = [...divisionData];
+    if (type === "division") {
+      newDivisionData[divisionIndex].divisionName = event.target.value;
+    } else if (type === "subdivision") {
+      let subdivisionIndex = parseInt(event.target.dataset.subdivisionIndex, 10); // Convert to number if it's a string
+      if (newDivisionData[divisionIndex].subDivisions && newDivisionData[divisionIndex].subDivisions.length > subdivisionIndex) {
+        newDivisionData[divisionIndex].subDivisions[subdivisionIndex].subDivisionName = event.target.value;
+      }
     } else if (type === "subject") {
-      const updatedSubjectRows = [...subjectRows];
-      updatedSubjectRows[index][event.target.name] = event.target.value;
-      setSubjectRows(updatedSubjectRows);
+      let subjectIndex = parseInt(event.target.dataset.subjectIndex, 10); // Convert to number if it's a string
+      if (newDivisionData[divisionIndex].subjects && newDivisionData[divisionIndex].subjects.length > subjectIndex) {
+        newDivisionData[divisionIndex].subjects[subjectIndex].subjectName = event.target.value;
+      }
     }
+    setDivisionData(newDivisionData);
   };
+
+
+
   const [userDetails, setUserDetails] = useState({});
 
   useEffect(() => {
@@ -45,139 +65,186 @@ const StepFour = ({ onNextClick }) => {
     setUserDetails(storedUserDetails);
   }, []);
 
-  const handleClassInputChange = (event) => {
-    setClassData({ ...classData, [event.target.name]: event.target.value });
+  useEffect(() => {
+    if (userDetails && userDetails.username) {
+
+      fetchDivisionData();
+    }
+  }, [userDetails]);
+
+
+  const fetchDivisionData = async () => {
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/api/display-divisions/', { username: userDetails.username });
+      if (response.data) {
+        const transformedData = response.data.map(division => ({
+          divisionName: division.divisionname,
+          subDivisions: division.subdivisions.map(subDivisionName => ({ subDivisionName })),
+          subjects: division.subjects.map(subjectName => ({ subjectName })),
+        }));
+        setDivisionData(transformedData);
+      }
+    } catch (error) {
+      console.error('Failed to fetch division data:', error);
+    }
   };
 
 
+
+
   const handleNext = () => {
-    // Create a new array with the user object followed by the rows
+
     const dataToSend = [
       { user: userDetails.username },
-      { classData, subclassRows, subjectRows }
+      { divisionData }
     ];
-    // Call the onNextClick callback with the modified data
     onNextClick(dataToSend);
   };
 
 
+  // ... rest of your code ...
+
   return (
+
     <section>
-      <div className="row mb-2">
-        <div className="col-4">
-          <div className="form-group">
-            <label>Class Name</label>
-            <input
-              type="text"
-              name="ClassName"
-              value={classData.ClassName}
-              onChange={handleClassInputChange}
-              className="form-control"
-              placeholder="Class"
-              required
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="row">
-        <div className="col-6">
+      {divisionData.map((division, divisionIndex) => (
+        <div className="row" key={divisionIndex}>
           <div className="row">
-            <div className="col-6">Subclass</div>
-          </div>
-
-          {subclassRows.map((row, index) => (
-            <div className="row" key={index}>
-              <div className="col-6">
-                <div className="form-group">
-                  <input
-                    type="text"
-                    name="Subclass"
-                    value={row.Subclass}
-                    onChange={(e) => handleInputChange(index, e, "subclass")}
-                    className="form-control"
-                    placeholder="Subclass"
-                    required
-                  />
-                </div>
-              </div>
-              <div className="col-6 col-sm-4 mb-2">
-                <button
-                  className="btn btn-danger"
-                  onClick={() => handleRemoveSubclassRow(index)}
-                >
-                  Delete
-                </button>
-              </div>
+            <div className="col-6">
+              <label>Division Name</label>
+              <input
+                type="text"
+                value={division.divisionName}
+                onChange={(e) => handleInputChange(divisionIndex, e, "division")}
+                className="form-control"
+                placeholder="Division Name"
+                required
+              />
             </div>
-          ))}
+          </div>
 
           <div className="row">
-            <div className="col-6 col-sm-4 mb-2">
+            <div className="col-6">
+              <div className="row mt-2">
+                <label>Subdivision Name</label>
+              </div>
+
+              {division.subDivisions.map((subDivision, subDivisionIndex) => (
+
+                <div className="row " key={subDivisionIndex}>
+
+                  <div className="col-8">
+                    <div className="form-group">
+                      <input
+                        type="text"
+                        value={subDivision.subDivisionName}
+                        onChange={(e) => handleInputChange(divisionIndex, e, "subdivision", subDivisionIndex)}
+                        className="form-control"
+                        placeholder="Subdivision Name"
+                        required
+                        data-subdivision-index={subDivisionIndex}  // Ensure this attribute is set correctly
+                      />
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleRemoveSubdivision(divisionIndex, subDivisionIndex)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+
+                </div>
+
+
+              ))}
+
               <button
-                className="btn btn-primary sw-btn-next ms-1"
-                onClick={handleAddSubclassRow}
+                className="btn btn-primary mt-2"
+                onClick={() => handleAddSubdivision(divisionIndex)}
               >
-                Add Subclass
+                Add Subdivision
               </button>
+
             </div>
-          </div>
-        </div>
 
-        <div className="col-6">          <div className="row">
 
-          <div className="col-8">Subject</div>
-        </div>
+            <div className="col-6">
+              <div className="row mt-2">
+                <label>Subject Name</label>
+              </div>
+              {division.subjects.map((subject, subjectIndex) => (
+                <div className="row" key={subjectIndex}>
+                  <div className="form-group col-8">
+                    <input
+                      type="text"
+                      value={subject.subjectName}
+                      onChange={(e) => handleInputChange(divisionIndex, e, "subject", subjectIndex)}
+                      className="form-control"
+                      placeholder="Subject Name"
+                      required
+                      data-subject-index={subjectIndex}
+                    />
+                  </div>
+                  <div className="col-4">
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleRemoveSubject(divisionIndex, subjectIndex)}
+                    >
+                      Delete
+                    </button>
+                  </div>
 
-          {subjectRows.map((row, index) => (
-            <div className="row" key={index}>
-              <div className="col-6">
-                <div className="form-group">
-                  <input
-                    type="text"
-                    name="Subject"
-                    value={row.Subject}
-                    onChange={(e) => handleInputChange(index, e, "subject")}
-                    className="form-control"
-                    placeholder="Subject"
-                    required
-                  />
+
                 </div>
-              </div>
-              <div className="col-6 col-sm-2 mb-2">
-                <button
-                  className="btn btn-danger"
-                  onClick={() => handleRemoveSubjectRow(index)}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
+              ))}
 
-          <div className="row">
-            <div className="col-6 col-sm-4 mb-2">
               <button
-                className="btn btn-primary sw-btn-next ms-1"
-                onClick={handleAddSubjectRow}
+                className="btn btn-primary mt-2"
+                onClick={() => handleAddSubject(divisionIndex)}
               >
                 Add Subject
               </button>
             </div>
+
+
+          </div>
+          <div className="row">
+            <div className="col-6 col-sm-4 mb-2 mt-3">
+              <button
+                className="btn btn-danger"
+                onClick={() => handleRemoveDivision(divisionIndex)}
+              >
+                Delete Division
+              </button>
+            </div>
           </div>
         </div>
+      ))}
 
+      <div className="row">
+        <div className="col-3 mb-2">
+          <button
+            className="btn btn-primary"
+            onClick={handleAddDivision}
+          >
+            Add Division
+          </button>
+        </div>
 
-        <div className="row">
-          <div className="col-6 col-sm-4 mb-2">
-            <button className="btn btn-primary sw-btn-next ms-1" onClick={handleNext}>
-              Save
-            </button>
-          </div>
+        <div className="col-6 mb-2">
+          <button className="btn btn-primary sw-btn-next ms-1" onClick={handleNext}>
+            Save
+          </button>
         </div>
       </div>
-    </section>
+    </section >
+
   );
+
+  // ... rest of your code ...
+
 };
 
 export default StepFour;

@@ -37,6 +37,7 @@ const Admin = () => {
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/generate-timetable/', { username: userDetails.username });
       const data = response.data;
+      console.log('Division data:', data);
 
       // Extract divisions and populate division data
       const divisionSet = new Set(data.map(entry => entry.division));
@@ -66,6 +67,7 @@ const Admin = () => {
 
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/display-timetable/', { username: userDetails.username });
+      console.log('Time slots response:', response.data);
       setStartTimeSlots(response.data[0].start_times);
       setEndTimeSlots(response.data[0].end_times);
       setDaysData(response.data[0].days.map(day => ({ name: day })));

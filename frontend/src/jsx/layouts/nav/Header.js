@@ -6,8 +6,7 @@ import { Link } from "react-router-dom";
 import { Dropdown } from "react-bootstrap";
 import LogoutPage from './Logout';
 /// Image
-import profile from "../../../images/profile/17.jpg";
-import avatar from "../../../images/avatar/1.jpg";
+
 import { ThemeContext } from "../../../context/ThemeContext";
 
 

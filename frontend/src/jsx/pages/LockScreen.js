@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import logo from '../../images/logo-full.png'
+
 
 const LockScreen = () => {
   const Nav = useNavigate();
@@ -19,7 +19,6 @@ const LockScreen = () => {
                   <div className='auth-form'>
                     <div className='text-center mb-3'>
                       <Link to='/'>
-                        <img src={logo} alt="" />
                       </Link>
                     </div>
                     <h4 className='text-center mb-4 text-white '>
